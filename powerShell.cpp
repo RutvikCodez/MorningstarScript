@@ -11,6 +11,8 @@ void printWelcomeMessage()
 {
     std::cout << "Simple Shell v1.0" << std::endl;
     std::cout << "Type 'exit' to exit the shell" << std::endl;
+    std::cout << "Type 'color <bg_color> <fg_color>' to change the background and foreground color" << std::endl;
+    std::cout << "Available colors: 0 = Black, 1 = Blue, 2 = Green, 3 = Aqua, 4 = Red, 5 = Purple, 6 = Yellow, 7 = White, 8 = Gray, 9 = Light Blue, A = Light Green, B = Light Aqua, C = Light Red, D = Light Purple, E = Light Yellow, F = Bright White" << std::endl;
 }
 
 std::vector<std::string> splitString(const std::string &str)
@@ -36,20 +38,34 @@ void executeCommand(const std::string &command)
 
 std::string autoCompleteCommand(const std::string &input, const std::vector<std::string> &commands)
 {
-   for(const auto &cmd : commands) {
-     if (cmd.find(input) == 0) {
-       return cmd;
-     }
-   }
-   return input;
+    for (const auto &cmd : commands)
+    {
+        if (cmd.find(input) == 0)
+        {
+            return cmd;
+        }
+    }
+    return input;
 }
 
+void changeConsoleColor(const std::string &bgColor, const std::string &fgColor)
+{
+    std::string validColors = "0123456789ABCDEF";
+    if (validColors.find(bgColor) == std::string::npos || validColors.find(fgColor) == std::string::npos)
+    {
+        std::cerr << "Invalid color code. Please use hex digits from 0 to F." << std::endl;
+        return;
+    }
+
+    std::string colorCommand = "color " + bgColor + fgColor;
+    executeCommand(colorCommand);
+}
 
 int main()
 {
     printWelcomeMessage();
 
-    std::vector<std::string> commanCommands = {
+    std::vector<std::string> commonCommands = {
         "ls",
         "cd",
         "pwd",
@@ -62,7 +78,6 @@ int main()
         "touch",
         "chmod",
         "chown",
-        "chmod",
         "chgrp",
         "ln",
         "find",
@@ -88,11 +103,23 @@ int main()
         {
             continue;
         }
-        std::string command;
-        for (const auto &arg : args)
+
+        // Check if the user needs auto-completion
+        std::string command = autoCompleteCommand(args[0], commonCommands);
+        
+        // If the command is "color", handle it separately
+        if (command == "color" && args.size() == 3)
         {
-            command += arg + " ";
+            changeConsoleColor(args[1], args[2]);
+            continue;
         }
+
+        // Reconstruct the command with possible auto-completion
+        for (size_t i = 1; i < args.size(); ++i)
+        {
+            command += " " + args[i];
+        }
+
         executeCommand(command);
     }
     std::cout << "Bye!" << std::endl;
