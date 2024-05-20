@@ -9,17 +9,17 @@ using namespace std;
 
 void printWelcomeMessage()
 {
-    std::cout << "Simple Shell v1.0" << std::endl;
-    std::cout << "Type 'exit' to exit the shell" << std::endl;
-    std::cout << "Type 'color <bg_color> <fg_color>' to change the background and foreground color" << std::endl;
-    std::cout << "Available colors: 0 = Black, 1 = Blue, 2 = Green, 3 = Aqua, 4 = Red, 5 = Purple, 6 = Yellow, 7 = White, 8 = Gray, 9 = Light Blue, A = Light Green, B = Light Aqua, C = Light Red, D = Light Purple, E = Light Yellow, F = Bright White" << std::endl;
+    cout << "Simple Shell v1.0" << endl;
+    cout << "Type 'exit' to exit the shell" << endl;
+    cout << "Type 'color <bg_color> <fg_color>' to change the background and foreground color" << endl;
+    cout << "Available colors: 0 = Black, 1 = Blue, 2 = Green, 3 = Aqua, 4 = Red, 5 = Purple, 6 = Yellow, 7 = White, 8 = Gray, 9 = Light Blue, A = Light Green, B = Light Aqua, C = Light Red, D = Light Purple, E = Light Yellow, F = Bright White" << endl;
 }
 
-std::vector<std::string> splitString(const std::string &str)
+vector<string> splitString(const string &str)
 {
-    std::istringstream iss(str);
-    std::vector<std::string> tokens;
-    std::string token;
+    istringstream iss(str);
+    vector<string> tokens;
+    string token;
     while (iss >> token)
     {
         tokens.push_back(token);
@@ -27,16 +27,16 @@ std::vector<std::string> splitString(const std::string &str)
     return tokens;
 }
 
-void executeCommand(const std::string &command)
+void executeCommand(const string &command)
 {
-    int result = std::system(command.c_str());
+    int result = system(command.c_str());
     if (result == -1)
     {
-        std::cerr << "Command execution failed." << std::endl;
+        cerr << "Command execution failed." << endl;
     }
 }
 
-std::string autoCompleteCommand(const std::string &input, const std::vector<std::string> &commands)
+string autoCompleteCommand(const string &input, const vector<string> &commands)
 {
     for (const auto &cmd : commands)
     {
@@ -48,16 +48,16 @@ std::string autoCompleteCommand(const std::string &input, const std::vector<std:
     return input;
 }
 
-void changeConsoleColor(const std::string &bgColor, const std::string &fgColor)
+void changeConsoleColor(const string &bgColor, const string &fgColor)
 {
-    std::string validColors = "0123456789ABCDEF";
-    if (validColors.find(bgColor) == std::string::npos || validColors.find(fgColor) == std::string::npos)
+    string validColors = "0123456789ABCDEF";
+    if (validColors.find(bgColor) == string::npos || validColors.find(fgColor) == string::npos)
     {
-        std::cerr << "Invalid color code. Please use hex digits from 0 to F." << std::endl;
+        cerr << "Invalid color code. Please use hex digits from 0 to F." << endl;
         return;
     }
 
-    std::string colorCommand = "color " + bgColor + fgColor;
+    string colorCommand = "color " + bgColor + fgColor;
     executeCommand(colorCommand);
 }
 
@@ -65,7 +65,7 @@ int main()
 {
     printWelcomeMessage();
 
-    std::vector<std::string> commonCommands = {
+    vector<string> commonCommands = {
         "ls",
         "cd",
         "pwd",
@@ -85,19 +85,19 @@ int main()
         "ps",
     };
 
-    std::string prompt = "$ ";
+    string prompt = "$ ";
 
-    std::string input;
+    string input;
     while (true)
     {
-        std::cout << prompt;
-        std::getline(std::cin, input);
+        cout << prompt;
+        getline(cin, input);
         if (input == "exit")
         {
             break;
         }
 
-        std::vector<std::string> args = splitString(input);
+        vector<string> args = splitString(input);
 
         if (args.empty())
         {
@@ -105,7 +105,7 @@ int main()
         }
 
         // Check if the user needs auto-completion
-        std::string command = autoCompleteCommand(args[0], commonCommands);
+        string command = autoCompleteCommand(args[0], commonCommands);
         
         // If the command is "color", handle it separately
         if (command == "color" && args.size() == 3)
@@ -122,6 +122,6 @@ int main()
 
         executeCommand(command);
     }
-    std::cout << "Bye!" << std::endl;
+    cout << "Bye!" << endl;
     return 0;
 }
