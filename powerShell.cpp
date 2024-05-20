@@ -17,6 +17,7 @@ void printWelcomeMessage()
 
 vector<string> splitString(const string &str)
 {
+    //read from the give string work like cin..
     istringstream iss(str);
     vector<string> tokens;
     string token;
